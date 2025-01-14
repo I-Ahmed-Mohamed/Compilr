@@ -34,6 +34,27 @@
         margin-bottom: 10px;
       }
     }
+
+    /* تصميم قائمة الخيارات */
+    .context-menu {
+      position: absolute;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      width: 150px;
+    }
+    .option {
+      padding: 10px;
+      background-color: #f8f9fa;
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+    }
+    .option:hover {
+      background-color: #e9ecef;
+    }
   </style>
 </head>
 <body>
@@ -64,6 +85,12 @@
     </div>
     <button class="btn btn-success mt-3" id="runCode">Run Code ▶️</button>
     <iframe id="outputFrame" class="mt-3"></iframe>
+  </div>
+
+  <div id="contextMenu" class="context-menu" style="display: none;">
+    <button id="copyBtn" class="option">نسخ</button>
+    <button id="pasteBtn" class="option">لصق</button>
+    <button id="deleteBtn" class="option">حذف</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
@@ -114,6 +141,53 @@
       const combinedCode = htmlCode + cssCode + jsCode;
       const outputFrame = document.getElementById("outputFrame");
       outputFrame.srcdoc = combinedCode;
+    });
+
+    // إضافة حدث الضغط المزدوج على المحرر لفتح القائمة
+    const editors = [htmlEditor, cssEditor, jsEditor];
+    editors.forEach(editor => {
+      editor.container.addEventListener('dblclick', function(event) {
+        // تحديد مكان ظهور القائمة بناءً على مكان الضغط
+        const contextMenu = document.getElementById("contextMenu");
+        contextMenu.style.left = event.pageX + 'px';
+        contextMenu.style.top = event.pageY + 'px';
+        contextMenu.style.display = 'block';
+
+        // حفظ المحرر الحالي
+        window.selectedEditor = editor;
+      });
+    });
+
+    // إخفاء القائمة عند النقر في أي مكان آخر
+    document.addEventListener('click', function(event) {
+      const contextMenu = document.getElementById("contextMenu");
+      if (!contextMenu.contains(event.target)) {
+        contextMenu.style.display = 'none';
+      }
+    });
+
+    // إضافة وظائف للخيارات
+    document.getElementById("copyBtn").addEventListener("click", function() {
+      const editor = window.selectedEditor;
+      const content = editor.getValue();
+      navigator.clipboard.writeText(content).then(() => {
+        alert("تم النسخ إلى الحافظة!");
+      });
+      document.getElementById("contextMenu").style.display = 'none';
+    });
+
+    document.getElementById("pasteBtn").addEventListener("click", function() {
+      const editor = window.selectedEditor;
+      navigator.clipboard.readText().then(text => {
+        editor.setValue(text, -1);
+      });
+      document.getElementById("contextMenu").style.display = 'none';
+    });
+
+    document.getElementById("deleteBtn").addEventListener("click", function() {
+      const editor = window.selectedEditor;
+      editor.setValue("", -1);
+      document.getElementById("contextMenu").style.display = 'none';
     });
   </script>
 </body>
