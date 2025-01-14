@@ -71,14 +71,17 @@
     const htmlEditor = ace.edit("htmlEditor");
     htmlEditor.setTheme("ace/theme/monokai");
     htmlEditor.session.setMode("ace/mode/html");
+    htmlEditor.setOptions({ enableBasicAutocompletion: true, enableLiveAutocompletion: true, enableSnippets: true });
 
     const cssEditor = ace.edit("cssEditor");
     cssEditor.setTheme("ace/theme/monokai");
     cssEditor.session.setMode("ace/mode/css");
+    cssEditor.setOptions({ enableBasicAutocompletion: true, enableLiveAutocompletion: true, enableSnippets: true });
 
     const jsEditor = ace.edit("jsEditor");
     jsEditor.setTheme("ace/theme/monokai");
     jsEditor.session.setMode("ace/mode/javascript");
+    jsEditor.setOptions({ enableBasicAutocompletion: true, enableLiveAutocompletion: true, enableSnippets: true });
 
     document.getElementById("toggleMode").addEventListener("click", function() {
       document.body.classList.toggle("dark-mode");
